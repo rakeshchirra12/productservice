@@ -1,5 +1,6 @@
 package com.product.productservice.service;
 
+import com.product.productservice.exception.InvalidProductException;
 import com.product.productservice.model.Product;
 import com.product.productservice.model.ProductDTO;
 import com.product.productservice.repository.ProductRepository;
@@ -18,10 +19,10 @@ public class SelfProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product getProduct(Long id) {
+    public Product getProduct(Long id) throws InvalidProductException {
         Optional<Product> optionalProduct = productRepository.findById(id);
         if(optionalProduct.isEmpty()) {
-            throw new RuntimeException("Product empty");
+            throw new InvalidProductException("Product empty");
         }
         return optionalProduct.get();
     }

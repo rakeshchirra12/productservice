@@ -1,10 +1,15 @@
 package com.product.productservice.controller;
 
 
+import com.product.productservice.commons.AuthenticationCommons;
+import com.product.productservice.dtos.UserDto;
+import com.product.productservice.exception.InvalidProductException;
 import com.product.productservice.model.Product;
 import com.product.productservice.model.ProductDTO;
 import com.product.productservice.service.ProductService;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,18 +19,24 @@ import java.util.List;
 public class ProductController {
 
     ProductService productService;
+    private final AuthenticationCommons authenticationCommons;
 
-    public ProductController(@Qualifier("selfProductServiceImpl") ProductService productService) {
+    public ProductController(@Qualifier("fakeProductServiceImpl") ProductService productService, AuthenticationCommons authenticationCommons) {
         this.productService = productService;
+        this.authenticationCommons = authenticationCommons;
     }
 
-    @GetMapping
-    public List<Product> getAllProducts() {
-        return productService.getAllProducts();
+    @GetMapping("/getAll/{token}")
+    public ResponseEntity<List<Product>> getAllProducts(@PathVariable String token) {
+        UserDto userDto = authenticationCommons.validateToken(token);
+        if(userDto == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        return ResponseEntity.accepted().body(productService.getAllProducts());
     }
 
     @GetMapping("/{id}")
-    public Product getProduct(@PathVariable long id) {
+    public Product getProduct(@PathVariable long id) throws InvalidProductException {
         return productService.getProduct(id);
     }
 
