@@ -13,12 +13,12 @@ import java.util.Date;
 @Getter
 @Setter
 @MappedSuperclass
-public abstract class BaseModel implements Serializable {
+public abstract class BaseModel implements Serializable  {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
-    private Date createdDate;
-    private Date modifiedDate;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private Date createdAt;
+    private Date updatedAt;
     private String createBy;
     private String modifiedBy;
 }

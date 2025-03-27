@@ -1,18 +1,21 @@
 package com.product.productservice.service;
 
-
-import com.product.productservice.exception.InvalidProductException;
+import com.product.productservice.exception.InvalidProductIdException;
 import com.product.productservice.model.Product;
-import com.product.productservice.model.ProductDTO;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface ProductService {
-    Product getProduct(Long id) throws InvalidProductException;
-    Product createproduct(Product product);
-    Product updateproduct(Long id, ProductDTO productDTO);
-    Product replaceProduct(Long id, Product product);
-    void deleteProduct(Long id);
+    Product getProductById(Long id) throws InvalidProductIdException;
 
-    List<Product> getAllProducts();
+    Page<Product> getAllProducts(int pageNumber, int pageSize, String sortDir);
+
+    Product updateProduct(Long id, Product product);
+
+    Product replaceProduct(Long id, Product product);
+
+    Product createProduct(Product product);
+
+    void deleteProduct();
 }

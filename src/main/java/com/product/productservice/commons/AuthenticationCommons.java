@@ -1,20 +1,34 @@
 package com.product.productservice.commons;
 
+
 import com.product.productservice.dtos.UserDto;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Component
 public class AuthenticationCommons {
-
-    private final RestTemplate restTemplate;
+    private RestTemplate restTemplate;
 
     public AuthenticationCommons(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
+
     public UserDto validateToken(String token) {
-        UserDto userDto = restTemplate.getForObject("http://localhost:8081/authService/users/validateToken/"+token, UserDto.class);
-        return userDto;
+        //Call UserService validateToken API to validate.
+
+        ResponseEntity<UserDto> response = restTemplate.postForEntity(
+                "http://localhost:3030/users/validate/" + token,
+                null,
+                UserDto.class
+        );
+
+        if (response.getBody() == null) {
+            //Token is invalid.
+            return null;
+        }
+
+        return response.getBody();
     }
 }
